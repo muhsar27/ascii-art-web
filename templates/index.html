@@ -10,11 +10,13 @@
 <body>
     <h1>Ascii Art Generator</h1>
     <form action="/asciiArt" method="POST">
-        <label for="word">
+        <label for="word" style="display: block;">
             <strong>Enter word:</strong>
         </label>
-        <textarea name="word" rows="10" cols="30"></textarea><br><br>
-        <label><strong>Select art style:</strong></label><br>
+        <textarea name="word" cols="30"></textarea><br><br>
+        <label>
+            <strong>Select art style:</strong>
+        </label><br>
         <input type="radio" name="banner" value="Standard">
         <label for="banner">Standard</label><br>
         <input type="radio" name="banner" value="Shadow">
