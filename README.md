@@ -29,8 +29,9 @@ The project demonstrates the use of:
 
 ## Authors
 
-* Faith
-* 
+* Faith Adekugbe
+* Muhammad Sarumi 
+* Israel Okunade
 
 ---
 
