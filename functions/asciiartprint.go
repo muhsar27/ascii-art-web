@@ -15,8 +15,12 @@ func PrintAsciiArt(inputString string, bannerLines []string) string {
 		}
 		for i := 1; i <= 9; i++ {
 			for j := 0; j < len(word); j++ {
-				numLine := (int(word[j])-32)*9 + i
-				result.WriteString(bannerLines[numLine])
+				if word[j] >= 32 && word[j] <= 126 {
+					numLine := (int(word[j])-32)*9 + i
+					result.WriteString(bannerLines[numLine])
+
+				}
+
 			}
 			result.WriteString("\n")
 		}
