@@ -2,7 +2,6 @@ package main
 
 import (
 	"ascii-art-web/functions"
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -32,25 +31,6 @@ func home(w http.ResponseWriter, r *http.Request) {
 }
 
 func asciiArt(w http.ResponseWriter, r *http.Request) {
-	word := r.FormValue("word")
-	banner := "banners/" + strings.ToLower(r.FormValue("banner")) + ".txt"
-
-	if word == "" {
-		http.Error(w, "Word cannot be empty", http.StatusBadRequest)
-		return
-	}
-	if banner == "" {
-		http.Error(w, "Art style cannot be empty", http.StatusBadRequest)
-		return
-	}
-
-	bannerByte, err := os.ReadFile(banner)
-	if err != nil {
-		fmt.Printf("Error: %s\n", err)
-		return
-	}
-	lines := strings.Split(string(bannerByte), "\n")
-	art := functions.PrintAsciiArt(word, lines)
 	if r.Method != http.MethodPost {
 		http.NotFound(w, r)
 		return
@@ -59,8 +39,36 @@ func asciiArt(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
+
+	word := r.FormValue("word")
+	bannerStyle := r.FormValue("banner")
+
+	if word == "" {
+		http.Error(w, "Word cannot be empty", http.StatusBadRequest)
+		return
+	}
+	if bannerStyle == "" {
+		http.Error(w, "Art style cannot be empty", http.StatusBadRequest)
+		return
+	}
+
+	bannerPath := "banners/" + strings.ToLower(bannerStyle) + ".txt"
+	bannerByte, err := os.ReadFile(bannerPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			http.Error(w, "Banner style not found", http.StatusNotFound)
+		} else {
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+		}
+		return
+	}
+
+	lines := strings.Split(string(bannerByte), "\n")
+	art := functions.PrintAsciiArt(word, lines)
+
 	tempErr := tmpl.ExecuteTemplate(w, "ascii.html", art)
 	if tempErr != nil {
-		log.Fatal(tempErr)
+		log.Println("Template error:", tempErr)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 	}
 }
