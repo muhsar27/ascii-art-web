@@ -1,30 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Homepage</title>
+    <title>ASCII Art Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #0f172a;
+            --bg-card: #1e293b;
+            --bg-input: #0b1120;
+            --border: #334155;
+            --border-hover: #475569;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --radius-lg: 14px;
+            --radius-md: 8px;
+            --radius-sm: 6px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 620px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 36px 32px;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 1px 1px rgba(255, 255, 255, 0.05);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--accent);
+            background: rgba(56, 189, 248, 0.12);
+            padding: 4px 12px;
+            border-radius: 9999px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(56, 189, 248, 0.25);
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label.field-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 110px;
+            font-family: 'Fira Code', Consolas, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            background: var(--bg-input);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 12px 14px;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+        }
+
+        textarea::placeholder {
+            color: #475569;
+        }
+
+        .banner-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .banner-card {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .banner-card input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .banner-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 10px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            transition: all 0.15s ease;
+            text-align: center;
+        }
+
+        .banner-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: color 0.15s ease;
+        }
+
+        .banner-card:hover .banner-content {
+            border-color: var(--border-hover);
+        }
+
+        .banner-card input[type="radio"]:checked + .banner-content {
+            background: rgba(99, 102, 241, 0.15);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 1px var(--primary);
+        }
+
+        .banner-card input[type="radio"]:checked + .banner-content .banner-title {
+            color: #ffffff;
+        }
+
+        .banner-card input[type="radio"]:focus-visible + .banner-content {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, #4338ca 100%);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 13px 20px;
+            cursor: pointer;
+            transition: transform 0.1s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+            box-shadow: 0 4px 14px -2px rgba(99, 102, 241, 0.4);
+            margin-top: 4px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px -2px rgba(99, 102, 241, 0.5);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .footer {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        @media (max-width: 520px) {
+            .container {
+                padding: 24px 20px;
+            }
+            .banner-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Ascii Art Generator</h1>
-    <form action="/asciiArt" method="POST">
-        <label for="word" style="display: block;">
-            <strong>Enter word:</strong>
-        </label>
-        <textarea name="word" cols="30"></textarea><br><br>
-        <label>
-            <strong>Select art style:</strong>
-        </label><br>
-        <input type="radio" name="banner" value="Standard">
-        <label for="banner">Standard</label><br>
-        <input type="radio" name="banner" value="Shadow">
-        <label for="banner">Shadow</label><br>
-        <input type="radio" name="banner" value="Thinkertoy">
-        <label for="banner">Thinkertoy</label><br><br>
-        <input type="submit" value="Submit">
-    </form>
-</body>
+    <div class="container">
+        <div class="header">
+            <span class="badge">Go ASCII Generator</span>
+            <h1>Ascii Art Generator</h1>
+            <p class="subtitle">Convert your text into stylized terminal banner art</p>
+        </div>
 
+        <form action="/asciiArt" method="POST">
+            <div class="field-group">
+                <label for="word" class="field-label">Text to convert</label>
+                <textarea id="word" name="word" placeholder="Type words, phrases, or numbers here..." required autofocus></textarea>
+            </div>
+
+            <div class="field-group">
+                <span class="field-label">Banner style</span>
+                <div class="banner-options">
+                    <label class="banner-card">
+                        <input type="radio" name="banner" value="Standard" checked>
+                        <div class="banner-content">
+                            <span class="banner-title">Standard</span>
+                        </div>
+                    </label>
+                    <label class="banner-card">
+                        <input type="radio" name="banner" value="Shadow">
+                        <div class="banner-content">
+                            <span class="banner-title">Shadow</span>
+                        </div>
+                    </label>
+                    <label class="banner-card">
+                        <input type="radio" name="banner" value="Thinkertoy">
+                        <div class="banner-content">
+                            <span class="banner-title">Thinkertoy</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Generate ASCII Art</button>
+        </form>
+
+        <div class="footer">
+            Tip: Press <kbd style="background:#0b1120; padding:2px 6px; border:1px solid #334155; border-radius:4px;">Ctrl + Enter</kbd> to submit
+        </div>
+    </div>
+
+    <script>
+        const textarea = document.getElementById('word');
+        textarea.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                textarea.closest('form').submit();
+            }
+        });
+    </script>
+</body>
 </html>
