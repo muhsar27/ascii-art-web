@@ -14,8 +14,16 @@ var tmpl = template.Must(template.ParseGlob("templates/*.html"))
 func main() {
 	http.HandleFunc("/", home)
 	http.HandleFunc("/asciiArt", asciiArt)
-	log.Println("Server running on port http://localhost:8080")
-	http.ListenAndServe(":8080", nil)
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	log.Printf("Server running on port http://localhost:%s\n", port)
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
+		log.Fatalf("Server failed to start: %v", err)
+	}
 }
 
 func home(w http.ResponseWriter, r *http.Request) {
